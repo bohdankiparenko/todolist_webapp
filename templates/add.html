@@ -1,0 +1,13 @@
+<!-- Defines relation between "base.html" and "add.html" -->
+{% extends "base.html" %}  
+
+<!-- Block "body" is defined in "base.html" and can be overridden in "add.html". -->
+{% block body %}
+<form method="POST">
+    <label for="task">Description:</label>
+    <input type="text" id="task" name="task" required>
+    <label for="completion_date">Completion date:</label>
+    <input type="date" id="completion_date" name="completion_date" required>
+    <button type="submit">Add Task</button>
+</form>
+{% endblock  %}

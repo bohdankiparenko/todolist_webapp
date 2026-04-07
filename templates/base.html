@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pl">
+	<head>
+		<!-- Jinja2 expression -->
+		<title>{{title}}</title>
+	</head>
+	<body>
+		<!-- Jinja2 expression -->
+		<h2>{{title}}</h2>
+		<hr>
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<div class="alert">
+			{% for message in messages %}
+			<p>{{ message }}</p>
+			{% endfor %}
+		</div>
+		{% endif %}
+		{% endwith %}
+		<p>
+			{% block body %}
+			{% endblock %} 
+		</p>
+	</body>
+</html>

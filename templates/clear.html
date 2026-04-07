@@ -1,0 +1,12 @@
+<!-- Defines relation between "base.html" and "clear.html" -->
+{% extends "base.html" %}  
+
+<!-- Block "body" is defined in "base.html" and can be overridden in "clear.html". -->
+{% block body %}
+
+<p>
+    Your tasks have been cleared. You can start with adding new ones <a href="/add/">here</a>.
+</p>
+
+<!-- Endblock instruction ends the block "body" -->
+{% endblock  %}

@@ -1,0 +1,12 @@
+<!-- Defines relation between "base.html" and "index.html" -->
+{% extends "base.html" %}  
+
+<!-- Block "body" is defined in "base.html" and can be overridden in "index.html". -->
+{% block body %}
+
+<p>
+    Start with choosing your <a href="/demand/">request</a> to execute.
+</p>
+
+<!-- Endblock instruction ends the block "body" -->
+{% endblock  %}

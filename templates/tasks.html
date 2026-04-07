@@ -1,0 +1,15 @@
+<!-- Defines relation between "base.html" and "tasks.html" -->
+{% extends "base.html" %}  
+
+<!-- Block "body" is defined in "base.html" and can be overridden in "tasks.html". -->
+{% block body %}
+
+<p>
+    Your tasks:
+    {% for task in data %}
+        <li>{{ task }}</li> 
+    {% endfor %}
+</p>
+
+<!-- Endblock instruction ends the block "body" -->
+{% endblock  %}

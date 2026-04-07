@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% for task in data %}
+<div class="task_box">
+    <form method="POST">
+        <p>
+            <!-- loop.index0 is used to get the index of the current task in the loop -->
+            <button type="submit" name="task_index" value="{{ loop.index0 }}">Delete</button>
+            Description:{{ task["description"] }}
+            Status:{{ task["status"] }}
+            Creation Date:{{ task["creation_date"] }}
+            Completion Date:{{ task["completion_date"] }}
+        </p>
+    </form>
+</div>
+{% endfor %}
+
+{% endblock %}

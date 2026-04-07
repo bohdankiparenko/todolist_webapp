@@ -1,5 +1,5 @@
 """
-All commands that are used in aplication
+All commands that are used in the application
 """
 import datetime as dt
 import json
@@ -23,12 +23,14 @@ def task_list(tasks):
     creation date(datetime), completion date(datetime) if were provided, 
     and until completion(difference between completion date and create date)
     """
+    output = []
     for i, t in enumerate(tasks, 1):
         if t["completion_date"] is not None:
             extra = f", Until completion: {dt.date.fromisoformat(t['completion_date']) - dt.date.fromisoformat(t['creation_date'])}"
         else:
             extra = ""
-        print(f"\t No:{i}, Description: {t['description']}, Done: {t['status']}, Creation date: {t['creation_date']}, Completion date: {t['completion_date']}{extra}")     
+        output.append(f"\t No:{i}, Description: {t['description']}, Done: {t['status']}, Creation date: {t['creation_date']}, Completion date: {t['completion_date']}{extra}")
+    return output     
 
 def save_tasks(tasks, filename="tasks.json"):
     """
