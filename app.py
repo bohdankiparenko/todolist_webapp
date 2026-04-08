@@ -33,14 +33,14 @@ def index():
     )
 
 @app.route("/demand/") # Service for the URL "/demand", which is the page for choosing a command to execute
-def demand():
+def demand_route():
     return render_template(
         "demand.html",
         title="Choose the command",
         url="/process_command/", # The endpoint that handles the POST method
         select_id="command_select",
         select_text="command",
-        data=["add", "delete", "show", "clear"], # List of commands to choose from
+        data=t.commands, # List of commands to choose from
     )
 
 @app.route("/process_command/", methods=["POST"]) # The route that handles the form submission
@@ -56,27 +56,60 @@ def process_command():
 @app.route("/show/")
 def show_route():
     load_data()
+    if session["tasks"] == []:
+        title = "You have no tasks"
+    else:
+        title = "Here's your task list"
     return render_template(
         "tasks.html",
-        title="Here's your task list",
-        data=cmds.task_list(session["tasks"]),
+        title=title,
+        data=t.show_tasks(session["tasks"]),
     )
 
 @app.route("/delete/", methods=["GET", "POST"]) # Service for the URL "/delete", which is the page for choosing a task to be removed
 def delete_route():
     load_data()
+    if session["tasks"] == []:
+        title = "You have no tasks"
+    else:
+        title = "Choose the task"
     if request.method == "POST":
         task_index = request.form.get("task_index")
         session["tasks"].pop(int(task_index))
         session.modified = True # Tells Flask that the session have been changed
         t.save_tasks(session["tasks"])
         flash("Your task have been successfully removed!")
-        return redirect("/")
+        return redirect("/delete/")
     return render_template(
-        "delete.html",
-        title="Choose the task",
+        "select.html",
+        title=title,
+        button_text="Delete",
         data=session["tasks"], # List of tasks (dicts) to choose from
     )
+
+@app.route("/mark/", methods=["GET", "POST"])
+def mark_route():
+    load_data()
+    if session["tasks"] == []:
+        title = "You have no tasks"
+    else:
+        title = "Choose the task"
+    if request.method == "POST":
+        task_index = request.form.get("task_index") # Returns string value from the HTTP form, which represents a task
+        task_status = session["tasks"][int(task_index)]["status"]
+        task_status, message = t.mark_task(task_status)
+        flash(message)
+        session["tasks"][int(task_index)]["status"] = task_status
+        session.modified = True # Tells Flask that the session have been changed
+        t.save_tasks(session["tasks"])
+        return redirect("/mark/")
+    return render_template(
+        "select.html",
+        title=title,
+        button_text="Mark",
+        data=session["tasks"], # List of tasks (dicts) to choose from
+    )
+
 
 
 @app.route("/add/", methods=["GET", "POST"])
@@ -84,11 +117,14 @@ def add_route():
     load_data()
     if request.method == "POST":
         completion_date = request.form.get("completion_date")
-        if dt.date.fromisoformat(completion_date) < dt.date.today():
-            return render_template(
-                "add.html",
-                title="You've entered a wrong date! Try again"
-            )
+        if completion_date:  
+            if dt.date.fromisoformat(completion_date) < dt.date.today():
+                return render_template(
+                    "add.html",
+                    title="You've entered a wrong date! Try again"
+                )
+        else:
+            completion_date = None
         description = request.form.get("task")
         task = t.add_task(description, completion_date)
         session["tasks"].append(task)
@@ -104,11 +140,15 @@ def add_route():
 @app.route("/clear/")
 def clear_route():
     load_data()
+    if session["tasks"] == []:
+        title = "You've already cleared your task list, what do you wanna more?"
+    else:
+        title = "Taskless"
     session.clear() # Clears the session cookie
     t.save_tasks([]) # Overwrites the JSON file with an empty list
     return render_template(
         "clear.html",
-        title="Taskless",
+        title=title,
     )
 
 
