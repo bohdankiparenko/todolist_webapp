@@ -2,6 +2,29 @@ import datetime as dt
 import json
 import os
 
+commands = ["add", "delete", "show", "mark", "clear"]
+
+
+def show_tasks(tasks):
+    """
+    Shows all tasks with details, such as:
+    no(inner index, integer), description(title etc, string), done/undone(status, bools), 
+    creation date(datetime), completion date(datetime) if were provided, 
+    and until completion(difference between completion date and create date)
+    """
+    output = []
+    for i, t in enumerate(tasks, 1):
+        if t['status']:
+            status = "Done"
+        else:
+            status = "Undone"
+        if t["completion_date"] is not None:
+            extra = f", Completion date: {t['completion_date']}, Until completion: {dt.date.fromisoformat(t['completion_date']) - dt.date.fromisoformat(t['creation_date'])}"
+        else:
+            extra = ""
+        output.append(f"\t No:{i}, Description: {t['description']}, Status: {status}, Creation date: {t['creation_date']}{extra}")
+    return output 
+
 def save_tasks(tasks):
     """
     Saves the task to the JSON file. If the file doesn't exist, it creates a new one and saves the task there
@@ -25,3 +48,16 @@ def add_task(description, completion_date):
     values = [description, False, creation_date, completion_date]
     task = dict(zip(keys, values))
     return task
+
+def mark_task(task_status):
+    """
+    Changes task status to done/undone
+    (where values are true and false respectively.)
+    Returns boolean value and messagee that will be displayed to the user
+    """
+    message = "Your task have been successfully marked as"
+    if task_status:
+        message += " undone"
+        return False, message
+    message += " done"
+    return True, message
